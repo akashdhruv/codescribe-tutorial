@@ -18,10 +18,11 @@ CXXFLAGS  := -O2 -std=c++17 -Wall -Wextra -Iinclude
 FFLAGS    := -O2 -J$(OBJ_DIR)
 LDFLAGS   := -lgfortran -lm
 
-CPP_SOURCES := $(SRC_DIR)/main.cpp
+CPP_SOURCES := $(SRC_DIR)/Grid.cpp $(SRC_DIR)/main.cpp
 
-F90_SOURCES := $(SRC_DIR)/Grid.F90 \
+F90_SOURCES := $(SRC_DIR)/Grid_fi.F90 \
                $(SRC_DIR)/Initialize.F90 \
+               $(SRC_DIR)/Finalize.F90 \
                $(SRC_DIR)/Diffusion.F90 \
                $(SRC_DIR)/Solver.F90 \
 
