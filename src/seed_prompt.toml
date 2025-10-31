@@ -113,7 +113,7 @@ Here are some rules I want you to follow:
     contain additional prompts defined as "scribe-prompt:".
 
 13. OUTPUT TAGS FOR SUBROUTINES/FUNCTIONS
-    Enclose the code solution under elements <csource> </csource> for the C++ part of the code,
+    Enclose the code solution under elements <cheader> </cheader> and <csource> </csource> for the C++ part of the code,
     and elements <fsource> </fsource> for the Fortran interface.
 
 14. FORTRAN MODULE CONVERSION
@@ -207,13 +207,23 @@ end subroutine example
 [[chat]]
 role = "assistant"
 content = """
-<csource>
+<cheader>
+#ifndef EXAMPLE_H
+#define EXAMPLE_H
+
 #include <constants_mod.hpp>
 #include <nf_mod.hpp>
 #include <zcouple_mod.hpp>
 #include <ewcharge_mod.hpp>
 #include <FArray.hpp>
 
+extern void example(double a, FArray1D<double>& b, FArray2D<double>& c, FArray2D<double>& d);
+
+#endif
+</cheader>
+
+<csource>
+#include <example.hpp>
 void example(double a, FArray1D<double>& b, FArray2D<double>& c, FArray2D<double>& d) {
   using namespace constants_mod;
   using namespace nf_mod;
