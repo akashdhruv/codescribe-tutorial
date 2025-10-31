@@ -11,7 +11,7 @@ void solver_();
 int main() {
   std::cout << "C++ Driver: Serial Diffusion Example" << std::endl;
 
-  // Initilazie in Fortran
+  // Initialize data in Fortran
   grid_init_();
 
   // Initialize in Fortran
@@ -21,7 +21,7 @@ int main() {
   solver_();
   std::cout << "C++ Driver: Simulation complete." << std::endl;
 
-  // Finalize in Fortran
+  // Finalize data in Fortran
   grid_finalize_();
   return 0;
 }
