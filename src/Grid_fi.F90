@@ -38,7 +38,7 @@ module Grid
   real(c_double), pointer, dimension(:,:) :: phi=>null(), rhs=>null()
 
 contains
-  subroutine Grid_init()
+  subroutine Grid_init() bind(C, name="grid_init_")
     call c_f_pointer(get_nx(), nx)
     call c_f_pointer(get_ny(), ny)
     call c_f_pointer(get_dx(), dx)
@@ -48,7 +48,7 @@ contains
     print *, "Grid init in Fortran/C++"
   end subroutine
 
-  subroutine Grid_finalize()
+  subroutine Grid_finalize() bind(C, name="grid_finalize_")
     nullify(phi, rhs, nx, ny, dx, dy)
     print *, "Grid finalize in Fortran/C++ interface"
   end subroutine
