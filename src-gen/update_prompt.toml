@@ -1,0 +1,9 @@
+[[chat]]
+role = "user"
+content = """
+Update these files to use the following logic.
+ - If you are in main.cpp add comment that you are in main code. 
+ - If you are in message.h add comments that this a funky header file. 
+ - If you are in message.cpp change the message to Hello, Updated CodeScribe.
+ - If you are in Makefile add comments that this is maked-the-file.
+"""
