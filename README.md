@@ -93,7 +93,7 @@ Use CodeScribe to update existing source files (e.g., after modifying design or 
 ### Steps
 
 ```bash
-code-scribe generate prompts/code_update.toml -m argo-gpt4o     -a generated-src/main.cpp     -a generated-src/Makefile
+code-scribe update generated-src/main.cpp  generated-src/Makefile -p prompts/code_update.toml -m argo-gpt4o
 ```
 
 ### Output
