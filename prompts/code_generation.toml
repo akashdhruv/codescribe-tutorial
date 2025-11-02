@@ -9,4 +9,6 @@ Include:
   - generated-src/Makefile
 
 Ensure each file is enclosed in <filename>...</filename> tags exactly as instructed. Add comments about the code in each file
+
+I will add some files for reference, use functions and classes defined in those files if useful. Make sure you mention what file you are using in comments.
 """
