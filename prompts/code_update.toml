@@ -7,5 +7,5 @@ Update these files to use the following logic.
  - If you are in message.cpp change the message to "Hello, Updated CodeScribe".
  - If you are in Makefile add comment "This is Makefile".
 
-Only edit the appended files.
+Only edit the files requested to edit.
 """

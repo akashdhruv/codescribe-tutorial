@@ -136,7 +136,7 @@ cd ..
 code-scribe generate prompts/code_generation.toml -m argo-gpt4o
 
 # 3. Update existing generated files
-code-scribe generate prompts/code_update.toml -m argo-gpt4o -a generated-src/main.cpp -a generated-src/Makefile
+code-scribe update generated-src/main.cpp generated-src/Makefile -p  prompts/code_update.toml -m argo-gpt4o
 ```
 
 ---
