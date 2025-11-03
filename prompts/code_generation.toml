@@ -1,5 +1,4 @@
-[[chat]]
-role = "user"
+[[chat.user]]
 content = """
 Generate a minimal C++ program that prints 'Hello, CodeScribe!' using a separate header and source file.
 Include:

@@ -1,5 +1,4 @@
-[[chat]]
-role = "user"
+[[chat.user]]
 content = """
 You are a code conversion tool for a scientific computing application.
 The application is organized as different source files in a directory structure.
@@ -161,12 +160,10 @@ Here are some rules I want you to follow:
 When you understand these rules, respond: I am ready. Please give me a test problem.
 """
 
-[[chat]]
-role = "assistant"
+[[chat.assistant]]
 content = "I am ready. Please give me a test problem."
 
-[[chat]]
-role = "user"
+[[chat.user]]
 content = """
 This is a template for a Fortran subroutine file which will be your input. Convert it
 to C++ using the rules I gave you:
@@ -204,8 +201,7 @@ end subroutine example
 </source>
 """
 
-[[chat]]
-role = "assistant"
+[[chat.assistant]]
 content = """
 <cheader>
 #ifndef EXAMPLE_H
@@ -288,8 +284,7 @@ end subroutine example
 </fsource>
 """
 
-[[chat]]
-role = "user"
+[[chat.user]]
 content = """
 Yes, this is correct. Now convert the following module similarly:
 
@@ -304,8 +299,7 @@ end module
 </source>
 """
 
-[[chat]]
-role = "assistant"
+[[chat.assistant]]
 content = """
 <cheader>
 #ifndef QCDCOUPLE_MOD
@@ -377,6 +371,5 @@ end module qcdcouple_mod
 </fsource>
 """
 
-[[chat]]
-role = "user"
+[[chat.user]]
 content = "Yes, this is correct. Now convert the following module similarly:"
