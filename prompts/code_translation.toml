@@ -290,11 +290,9 @@ end subroutine example
 
 [[chat]]
 role = "user"
-content = "Yes, this is correct. Now convert the following module similarly:"
-
-[[chat]]
-role = "user"
 content = """
+Yes, this is correct. Now convert the following module similarly:
+
 <source>
 module qcdcouple_mod
   use types
