@@ -1,8 +1,10 @@
 [[chat.user]]
-content = """
+content = '''
 You are a code conversion tool for a scientific computing application.
 The application is organized as different source files in a directory structure.
-I will give you a Fortran file which you will convert to a C++ source code file OR a Fortran module which you will convert into a C++ header (.hpp), a C++ source (.cpp), and a Fortran interface (_fi.f90).
+I will give you a Fortran file which you will convert to a C++ source code file OR a Fortran module
+which you will convert into a C++ header (.hpp), a C++ source (.cpp), and a Fortran interface
+(_fi.f90).
 
 The code you will receive is part of a larger codebase, so do not add additional
 function declarations or a main function definition. Just perform the conversion
@@ -56,12 +58,12 @@ Here are some rules I want you to follow:
 
    FArray2D<double> a(nx, ny);
 
-   Include the <FArray.hpp> header and use the appropriate class (FArray1D, FArray2D, FArray3D) depending on
-   the array dimensionality.
+   Include the <FArray.hpp> header and use the appropriate class (FArray1D, FArray2D, FArray3D)
+   depending on the array dimensionality.
 
 4. ARGUMENT INTENT
-   For subroutine arguments declared with intent(in) or intent(inout), pass them by reference in C++.
-   For example:
+   For subroutine arguments declared with intent(in) or intent(inout), pass them by reference in
+   C++. For example:
 
    real(dp), intent(in) :: a
    becomes
@@ -112,7 +114,8 @@ Here are some rules I want you to follow:
     contain additional prompts defined as "scribe-prompt:".
 
 13. OUTPUT TAGS FOR SUBROUTINES/FUNCTIONS
-    Enclose the code solution under elements <cheader> </cheader> and <csource> </csource> for the C++ part of the code,
+    Enclose the code solution under elements <cheader> </cheader> and <csource> </csource> for the
+C++ part of the code,
     and elements <fsource> </fsource> for the Fortran interface.
 
 14. FORTRAN MODULE CONVERSION
@@ -158,13 +161,17 @@ Here are some rules I want you to follow:
     one <csource>...</csource>, and one <fsource>...</fsource> block, and nothing else.
 
 When you understand these rules, respond: I am ready. Please give me a test problem.
-"""
+
+'''
 
 [[chat.assistant]]
-content = "I am ready. Please give me a test problem."
+content = '''
+I am ready. Please give me a test problem.
+
+'''
 
 [[chat.user]]
-content = """
+content = '''
 This is a template for a Fortran subroutine file which will be your input. Convert it
 to C++ using the rules I gave you:
 
@@ -199,10 +206,11 @@ subroutine example(a,b,c,d)
   return
 end subroutine example
 </source>
-"""
+
+'''
 
 [[chat.assistant]]
-content = """
+content = '''
 <cheader>
 #ifndef EXAMPLE_H
 #define EXAMPLE_H
@@ -282,10 +290,11 @@ subroutine example(a,b,c,d)
   call example_wrapper(a,b,c,d)
 end subroutine example
 </fsource>
-"""
+
+'''
 
 [[chat.user]]
-content = """
+content = '''
 Yes, this is correct. Now convert the following module similarly:
 
 <source>
@@ -297,10 +306,11 @@ module qcdcouple_mod
   save
 end module
 </source>
-"""
+
+'''
 
 [[chat.assistant]]
-content = """
+content = '''
 <cheader>
 #ifndef QCDCOUPLE_MOD
 #define QCDCOUPLE_MOD
@@ -369,7 +379,11 @@ contains
   end subroutine
 end module qcdcouple_mod
 </fsource>
-"""
+
+'''
 
 [[chat.user]]
-content = "Yes, this is correct. Now convert the following module similarly:"
+content = '''
+Yes, this is correct. Now convert the following module similarly:
+
+'''
