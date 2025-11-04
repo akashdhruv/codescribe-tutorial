@@ -1,10 +1,10 @@
 [[chat.user]]
 content = '''
 Update these files to use the following logic.
- - If you are in main.cpp add comment "You are in main code".
- - If you are in message.h add comment "This a groovy header file".
- - If you are in message.cpp change the message to "Hello, Updated CodeScribe".
- - If you are in Makefile add comment "This is Makefile".
+   - If you are in main.cpp add comment "You are in main code".
+   - If you are in message.h add comment "This a groovy header file".
+   - If you are in message.cpp change the message to "Hello, Updated CodeScribe".
+   - If you are in Makefile add comment "This is Makefile".
 
 Only edit the files requested to edit.
 
