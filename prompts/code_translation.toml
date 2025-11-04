@@ -1,3 +1,6 @@
+# Example chat completion template for code translation to demonstrate
+# how CodeScribe translates Fortran to C++
+
 [[chat.user]]
 content = '''
 You are a code conversion tool for a scientific computing application.
@@ -163,6 +166,9 @@ C++ part of the code,
 When you understand these rules, respond: I am ready. Please give me a test problem.
 
 '''
+
+# Assistant block and its comments
+# This should be perserved right here. 
 
 [[chat.assistant]]
 content = '''
