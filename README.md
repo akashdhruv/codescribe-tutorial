@@ -112,7 +112,7 @@ codescribe-tutorial/
 └── README.md                    # This file
 ```
 
-## 🧾 Example Workflow
+## Example Workflow
 
 ```bash
 # 1. Translate a Fortran source file
@@ -120,23 +120,29 @@ cd codescribe-tutorials/src
 code-scribe index .
 code-scribe translate Initialize.F90 -p ../prompts/code_translation.toml -m argo-gpt4o
 
+
 # 2. Generate a new example application
 cd codescribe-tutorials
 code-scribe generate prompts/code_generation.toml -m argo-gpt4o
 
+
 # 3. Generate using single line query
 cd codescribe-tutorials
-code-scribe generate "Write prompts/code_complicated.toml to generate a more complicated application" \
-                     -r prompts/code_generation.toml -m argo-gpt4o
+code-scribe generate "Write a new toml file to generate a more complicated application" \
+                     -r prompts/code_generation.toml \
+                     -m argo-gpt4o
 
-# Generate source code for the application
 code-scribe generate prompts/code_complicated.toml -m argo-gpt4o
+
 
 # 4. Update existing generated files
 code-scribe update generated-src/main.cpp generated-src/Makefile -p  prompts/code_update.toml -m argo-gpt4o
 
+
 # 5. Update files using single line query
-cod-scribe update src/main.ccp -p "Write a detailed documentation for the file" -m argo-gpt4o
+code-scribe update src/main.cpp src/Solver.F90 src/Initialize.F90 \
+                   -p "Write a detailed documentation for in the comment section of these files" \
+                   -m argo-gpt4o
 ```
 
 ## Additional Resources
