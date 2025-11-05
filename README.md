@@ -132,7 +132,7 @@ code-scribe generate "Write complicated.toml file to generate a more complicated
                      -r prompts/code_generation.toml \
                      -m argo-gpt4o
 
-code-scribe generate prompts/complicated.toml -m argo-gpt4o
+code-scribe generate complicated.toml -m argo-gpt4o
 
 
 # 4. Update existing generated files
