@@ -1,0 +1,33 @@
+# Instructions for replacing Fortran functions with C++ in main.cpp and Makefile
+
+[[chat.user]]
+content = '''
+You are a code modification tool for integrating C++ functions into a mixed-language codebase.
+The codebase currently uses Fortran subroutines and modules, and the goal is to replace these
+with equivalent C++ implementations while maintaining compatibility with the existing Fortran
+interface.
+
+Here are the tasks you need to perform:
+
+1. MAIN DRIVER (main.cpp)
+   Replace calls to Fortran subroutines provided in the reference files  with calls to equivalent
+   C++ functions. For example:
+      - Replace "function_()" with "Function()".
+      - Include "#include<Function.hpp>"
+      - Note that function is just a place holder name for the function defined in the reference
+      files.
+
+2. MAKEFILE
+   Update the Makefile to include the new C++ source files and remove references to Fortran
+   source files that have been replaced. For example:
+      - Add "filename.cpp" to the list of C++ sources.
+      - Remove "filename_fi.F90" from the list of Fortran sources.
+
+   Ensure that the build process correctly links the C++ and Fortran object files.
+
+3. GENERAL
+   Follow the general pattern and structure, and do not introduce unnecessary changes to
+   unrelated parts of the codebase.
+
+'''
+
