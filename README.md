@@ -153,7 +153,7 @@ code-scribe update generated-src/main.cpp generated-src/Makefile -p  prompts/cod
 
 # 5. Update files using single line query
 code-scribe update src/main.cpp src/Solver.F90 src/Initialize.F90 \
-                   -p "Write a detailed documentation in the comment section of these files" \
+                   -q "Write a detailed documentation in the comment section of these files" \
                    -m argo-gpt4o
 ```
 
