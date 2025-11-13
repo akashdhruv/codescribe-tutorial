@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+title: "akashdhruv/codescribe-tutorial: Release for publication and SC tutorial"
+authors:
+  - family-names: Dhruv
+    given-names: Akash
+version: "2025.11"
+doi: "10.5281/zenodo.17595310"
+date-released: 2025-11-01
+repository-code: "https://github.com/akashdhruv/codescribe-tutorial"
