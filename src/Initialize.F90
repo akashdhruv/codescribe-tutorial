@@ -1,5 +1,5 @@
 subroutine Initialize()
-   use Grid
+   use Grid, only: nx, ny, phi, rhs
    implicit none
    integer :: i, j
 

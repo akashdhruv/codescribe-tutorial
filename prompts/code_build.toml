@@ -25,9 +25,13 @@ Here are the tasks you need to perform:
 
    Ensure that the build process correctly links the C++ and Fortran object files.
 
-3. GENERAL
+3. RULES
    Follow the general pattern and structure, and do not introduce unnecessary changes to
-   unrelated parts of the codebase.
+   unrelated parts of the codebase. Only change the code relevant to the reference files.
+   This rule should be strictly enforced in order to track incremental changes in the codebase.
+
+Now follow the code policy for the following reference files, only update the build system to add
+these files:
 
 '''
 

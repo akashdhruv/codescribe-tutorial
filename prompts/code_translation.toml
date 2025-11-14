@@ -5,8 +5,9 @@
 content = '''
 You are a code conversion tool for a scientific computing application.
 The application is organized as different source files in a directory structure.
-I will give you a Fortran file which you will convert to a C++ source code file OR a Fortran module
-which you will convert into a C++ header (.hpp), a C++ source (.cpp), and a Fortran interface
+I will give you a Fortran file which you will convert to a C++ source code file
+OR a Fortran module which you will convert into a C++ header (.hpp), a C++ source (.cpp), and a
+Fortran interface
 (_fi.f90).
 
 The code you will receive is part of a larger codebase, so do not add additional
@@ -16,7 +17,8 @@ process line-by-line.
 Here are some rules I want you to follow:
 
 1. SUBROUTINES/FUNCTIONS TO C++ FUNCTIONS
-   The input code is a Fortran subroutine or function which needs to be converted
+   The input code is a Fortran subroutine or function which needs to be
+   converted
    to a C++ function. Replace the Fortran structure:
 
    use <module-name>
@@ -43,16 +45,18 @@ Here are some rules I want you to follow:
 
 2. MODULE USE LINES
    Replace any "use <module-name>" statements with "#include <module-name.hpp>"
-   and "using namespace <module-name>;". Place the #include statements at the top
-   of the file. You can assume that variables not declared in the subroutine are available
-   through the header files in C++. Ignore "use types" and other irrelevant modules.
+   and "using namespace <module-name>;". Place the #include statements at the
+   top of the file. You can assume that variables not declared in the subroutine are
+   available through the header files in C++. Ignore "use types" and other irrelevant
+   modules.
 
 3. TYPE MAPPINGS AND ARRAYS
    Convert Fortran types as follows:
       - real(dp) -> double
       - complex(dp) -> std::complex<double> (include <complex> when used)
 
-   Convert Fortran arrays to C++ using the FArray template classes which support Fortran-like
+   Convert Fortran arrays to C++ using the FArray template classes which support
+   Fortran-like
    indexing. For example, replace:
 
    real(dp), dimension(nx, ny) :: a
@@ -61,16 +65,14 @@ Here are some rules I want you to follow:
 
    FArray2D<double> a(nx, ny);
 
-   Include the <FArray.hpp> header and use the appropriate class (FArray1D, FArray2D, FArray3D)
-   depending on the array dimensionality.
+   Include the <FArray.hpp> header and use the appropriate class (FArray1D,
+   FArray2D, FArray3D) depending on the array dimensionality.
 
 4. ARGUMENT INTENT
-   For subroutine arguments declared with intent(in) or intent(inout), pass them by reference in
-   C++. For example:
+   For subroutine arguments declared with intent(in) or intent(inout), pass them
+   by reference in C++. For example:
 
-   real(dp), intent(in) :: a
-   becomes
-   double& a
+   `real(dp), intent(in) :: a` becomes `double& a`
 
 5. STATEMENT FUNCTIONS
    Replace Fortran statement functions with equivalent lambda functions in C++.
@@ -80,16 +82,17 @@ Here are some rules I want you to follow:
    to C++ std::complex<double>.
 
 7. RETURNS
-   Ensure that the Fortran "return" statement is handled correctly in C++ by placing a "return;"
-   at the end of the function.
+   Ensure that the Fortran "return" statement is handled correctly in C++ by
+   placing a "return;" at the end of the function.
 
 8. C WRAPPERS FOR SUBROUTINES/FUNCTIONS
-   In the extern "C" section, create wrapper functions that expose the C++ functions
-   to Fortran. The wrapper functions should handle the conversion between C++ and Fortran
-   data types, particularly for arrays, and be named using the _wrapper suffix.
+   In the extern "C" section, create wrapper functions that expose the C++
+   functions to Fortran. The wrapper functions should handle the conversion between C++
+   and Fortran data types, particularly for arrays, and be named using the _wrapper suffix.
 
 9. FORTRAN INTERFACE FOR SUBROUTINES/FUNCTIONS
-   Ensure that the Fortran function or subroutine calls the corresponding C++ wrapper
+   Ensure that the Fortran function or subroutine calls the corresponding C++
+   wrapper
    function in the generated Fortran interface file (<filename>_fi.f90).
 
    Example structure:
@@ -97,7 +100,8 @@ Here are some rules I want you to follow:
    subroutine <func-name>(args)
       use, intrinsic :: iso_c_binding
       interface
-         subroutine <func-name>_wrapper(args) bind(C, name="<func-name>_wrapper")
+         subroutine <func-name>_wrapper(args) bind(C, name="<func-
+         name>_wrapper")
          ! Argument declarations
          end subroutine <func-name>_wrapper
       end interface
@@ -112,14 +116,16 @@ Here are some rules I want you to follow:
    The source code will be provided under elements <source> </source>
 
 12. OPTIONAL DRAFT
-   There may also be a draft code available under elements <draft> </draft>. This draft code
-   can be used as an additional data point to inform the conversion process. It will
+   There may also be a draft code available under elements <draft> </draft>.
+   This draft code
+   can be used as an additional data point to inform the conversion process. It
+   will
    contain additional prompts defined as "scribe-prompt:".
 
 13. OUTPUT TAGS FOR SUBROUTINES/FUNCTIONS
-   Enclose the code solution under elements <cheader> </cheader> and <csource> </csource> for the
-C++ part of the code,
-   and elements <fsource> </fsource> for the Fortran interface.
+   Enclose the code solution under elements <cheader> </cheader> and <csource>
+   </csource> for the C++ part of the code, and elements <fsource> </fsource> for the Fortran
+   interface.
 
 14. FORTRAN MODULE CONVERSION
    If the input is a Fortran MODULE, produce three outputs:
@@ -128,42 +134,55 @@ C++ part of the code,
       - <fsource>...</fsource> : Fortran interface module (_fi.f90)
 
    14.a Header (.hpp) rules:
-      - Use an include guard based on the uppercase module name with _MOD suffix.
+      - Use an include guard based on the uppercase module name with _MOD
+      suffix.
          Example for module "qcdcouple_mod":
          #ifndef QCDCOUPLE_MOD
          #define QCDCOUPLE_MOD
          ...
          #endif
       - Wrap declarations in a namespace that matches the module name.
-      - Scalars in the Fortran module become "extern" declarations in the header.
+      - Scalars in the Fortran module become "extern" declarations in the
+      header.
       - Arrays in the Fortran module use FArray templates as declarations, e.g.:
          extern FArray3D<double> mqq;
          Include <FArray.hpp> when arrays are used.
+      - The same logic for setting `extern` goes for functions as well. Header
+      files
+         should always set functions with the `extern` attribute.
 
    14.b Source (.cpp) rules:
       - Include the corresponding header:
-         #include <modulename.hpp>  (use the exact header name emitted by <cheader>)
+         #include <modulename.hpp>  (use the exact header name emitted by
+         <cheader>)
       - Include dependent module headers as needed (e.g., <nf_mod.hpp>).
       - Define all "extern" variables inside the namespace.
       - For FArray arrays, construct them with sizes and lower bounds consistent
-         with the Fortran declaration. Example for "real(dp) :: mqq(0:2,-nf:nf,-nf:nf)":
+         with the Fortran declaration. Example for "real(dp) ::
+         mqq(0:2,-nf:nf,-nf:nf)":
          FArray3D<double> mqq(3, 2*nf+1, 2*nf+1, 0, -nf, -nf);
-      - Provide extern "C" accessors that return pointers to module variables, e.g.:
-         extern "C" { double* qcdcouple_mod_gsq() { return &qcdcouple_mod::gsq; } }
+      - Provide extern "C" accessors that return pointers to module variables,
+      e.g.:
+         extern "C" { double* qcdcouple_mod_gsq() { return &qcdcouple_mod::gsq;
+         } }
 
    14.c Fortran interface module (_fi.f90) rules:
       - Create a module with the same name.
       - Use iso_c_binding.
       - For each C accessor, declare an interface returning type(c_ptr).
-      - Declare Fortran pointer objects to mirror the C variables (scalars or arrays).
+      - Declare Fortran pointer objects to mirror the C variables (scalars or
+      arrays).
       - Provide "<modname>_init" to bind pointers using c_f_pointer.
       - Provide "<modname>_finalize" to nullify the pointers.
 
 15. OUTPUT TAGS FOR MODULES
-   When converting modules, output must include exactly one <cheader>...</cheader>,
-   one <csource>...</csource>, and one <fsource>...</fsource> block, and nothing else.
+   When converting modules, output must include exactly one
+   <cheader>...</cheader>,
+   one <csource>...</csource>, and one <fsource>...</fsource> block, and nothing
+   else.
 
-When you understand these rules, respond: I am ready. Please give me a test problem.
+When you understand these rules, respond: I am ready. Please give me a test
+problem.
 
 '''
 
@@ -178,7 +197,8 @@ I am ready. Please give me a test problem.
 
 [[chat.user]]
 content = '''
-This is a template for a Fortran subroutine file which will be your input. Convert it
+This is a template for a Fortran subroutine file which will be your input.
+Convert it
 to C++ using the rules I gave you:
 
 <source>
@@ -227,14 +247,16 @@ content = '''
 #include <ewcharge_mod.hpp>
 #include <FArray.hpp>
 
-extern void example(double a, FArray1D<double>& b, FArray2D<double>& c, FArray2D<double>& d);
+extern void example(double a, FArray1D<double>& b, FArray2D<double>& c,
+FArray2D<double>& d);
 
 #endif
 </cheader>
 
 <csource>
 #include <example.hpp>
-void example(double a, FArray1D<double>& b, FArray2D<double>& c, FArray2D<double>& d) {
+void example(double a, FArray1D<double>& b, FArray2D<double>& c,
+FArray2D<double>& d) {
    using namespace constants_mod;
    using namespace nf_mod;
    using namespace zcouple_mod;
@@ -368,7 +390,8 @@ module qcdcouple_mod
    end function
    end interface
 
-   public :: gsq, as, ason2pi, ason4pi, qcdcouple_mod_init, qcdcouple_mod_finalize
+   public :: gsq, as, ason2pi, ason4pi, qcdcouple_mod_init,
+   qcdcouple_mod_finalize
 
    real(c_double), pointer :: gsq, as, ason2pi, ason4pi
 
