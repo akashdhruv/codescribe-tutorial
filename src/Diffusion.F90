@@ -6,7 +6,7 @@ subroutine Diffusion(rhs, phi, dx, dy, Coeff, ix1, ix2, jy1, jy2)
    !---Argument List -----
    real(c_double), dimension(ix1:ix2, jy1:jy2), intent(inout) :: rhs
    real(c_double), dimension(ix1:ix2, jy1:jy2), intent(in)  :: phi
-   real, intent(in) :: Coeff
+   real(c_double), intent(in) :: Coeff
    real(c_double), intent(in) :: dx, dy
    integer, intent(in) :: ix1, ix2, jy1, jy2
 

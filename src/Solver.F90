@@ -31,7 +31,7 @@ subroutine Solver()
    print *, "Fortran Solver: Starting diffusion solve"
    do iteration = 1, 20
       error = rhs(10, 10)-center_vals(iteration)
-      print *, "Error with Reference: Iteration (", iteration, "):", error
+      print *, "Error with Reference: Iteration", iteration, ":", error
       call Diffusion(rhs, phi, dx, dy, 1.0d0, 1, nx, 1, ny)
    end do
    print *, "Fortran Solver: Completed"

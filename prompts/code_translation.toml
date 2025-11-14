@@ -92,8 +92,7 @@ Here are some rules I want you to follow:
 
 9. FORTRAN INTERFACE FOR SUBROUTINES/FUNCTIONS
    Ensure that the Fortran function or subroutine calls the corresponding C++
-   wrapper
-   function in the generated Fortran interface file (<filename>_fi.f90).
+   wrapper function in the generated Fortran interface file (<filename>_fi.f90).
 
    Example structure:
 
@@ -198,8 +197,7 @@ I am ready. Please give me a test problem.
 [[chat.user]]
 content = '''
 This is a template for a Fortran subroutine file which will be your input.
-Convert it
-to C++ using the rules I gave you:
+Convert it to C++ using the rules I gave you:
 
 <source>
 subroutine example(a,b,c,d)
@@ -233,6 +231,9 @@ subroutine example(a,b,c,d)
 end subroutine example
 </source>
 
+Note that the variable `a` should be passed by value and the arrays `b`, `c`, and `d` passed by
+reference.
+
 '''
 
 [[chat.assistant]]
@@ -247,16 +248,14 @@ content = '''
 #include <ewcharge_mod.hpp>
 #include <FArray.hpp>
 
-extern void example(double a, FArray1D<double>& b, FArray2D<double>& c,
-FArray2D<double>& d);
+extern void example(double a, FArray1D<double>& b, FArray2D<double>& c, FArray2D<double>& d);
 
 #endif
 </cheader>
 
 <csource>
 #include <example.hpp>
-void example(double a, FArray1D<double>& b, FArray2D<double>& c,
-FArray2D<double>& d) {
+void example(double a, FArray1D<double>& b, FArray2D<double>& c, FArray2D<double>& d) {
    using namespace constants_mod;
    using namespace nf_mod;
    using namespace zcouple_mod;
