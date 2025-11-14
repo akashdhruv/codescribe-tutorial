@@ -16,8 +16,8 @@ subroutine Diffusion(rhs, phi, dx, dy, Coeff, ix1, ix2, jy1, jy2)
    do j = jy1+1, jy2-1
       do i = ix1+1, ix2-1
          rhs(i, j) = rhs(i, j) &
-                        +(Coeff/(dx**2))*(phi(i+1, j)+phi(i-1, j)-2.*phi(i, j)) &
-                        +(Coeff/(dy**2))*(phi(i, j+1)+phi(i, j-1)-2.*phi(i, j))
+                     +(Coeff/(dx**2))*(phi(i+1, j)+phi(i-1, j)-2.*phi(i, j)) &
+                     +(Coeff/(dy**2))*(phi(i, j+1)+phi(i, j-1)-2.*phi(i, j))
       end do
    end do
    return

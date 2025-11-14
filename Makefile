@@ -14,7 +14,7 @@ TARGET    := pdesolver
 SRC_DIR   := src
 OBJ_DIR   := build
 
-CXXFLAGS  := -O2 -std=c++17 -Wall -Wextra -Iinclude
+CXXFLAGS  := -O2 -std=c++17 -Wall -Wextra -Iinclude -Isrc
 FFLAGS    := -O2 -J$(OBJ_DIR)
 LDFLAGS   := -lgfortran -lm
 
