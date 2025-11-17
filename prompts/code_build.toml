@@ -21,7 +21,7 @@ Here are the tasks you need to perform:
    Update the Makefile to include the new C++ source files and remove references to Fortran
    source files that have been replaced. For example:
       - Add "filename.cpp" to the list of C++ sources.
-      - Remove "filename_fi.F90" from the list of Fortran sources.
+      - Remove "filename.F90" and add "filename_fi.F90" to the list of Fortran sources.
 
    Ensure that the build process correctly links the C++ and Fortran object files.
 
