@@ -36,15 +36,9 @@ The following are **not supported** by CodeScribe planner/executor. If detected,
 **Optional inputs:**
 - Reference files: list of paths for `-r` flags
 
-**Validation:**
-- If TOML path: validate with `codescribe.shell path_info`
-- If reference files: validate each with `codescribe.shell path_info`
+**Validation:** Per `codescribe_core` Path Validation Protocol.
 
-**Executor bundle commands (in order):**
-1. `codescribe.model` - Resolve model ID
-2. `codescribe.codescribe generate <prompt> [-r <refs>...] -m <model>` - Generate code
-
-**CLI command:** `generate`
+**Bundle:** Per `codescribe_core` Executor Command Bundle Contract.
 
 ---
 
@@ -59,16 +53,9 @@ The following are **not supported** by CodeScribe planner/executor. If detected,
 **Supported Fortran extensions:**
 `.f` `.F` `.f90` `.F90` `.f95` `.F95` `.f03` `.F03` `.f08` `.F08` `.for` `.FOR`
 
-**Validation:**
-- Validate seed prompt TOML with `codescribe.shell path_info`
-- Validate each Fortran file with `codescribe.shell path_info`
-- Read the seed prompt TOML using `read` tool
+**Validation:** Per `codescribe_core` Path Validation Protocol. Also read the seed prompt TOML using `read` tool.
 
-**Executor bundle commands (in order):**
-1. `codescribe.model` - Resolve model ID
-2. `codescribe.codescribe index <root_dir>` - Index the project directory
-3. `codescribe.codescribe draft <fortran_files>` - Generate .scribe metadata files
-4. `codescribe.codescribe translate <fortran_files> -p <prompt> -m <model>` - Translate to C++
+**Bundle:** Per `codescribe_core` Executor Command Bundle Contract (includes mandatory `index` -> `draft` -> `translate` ordering).
 
 **Root directory calculation:**
 - Determine `root_dir` as the lowest common ancestor of all Fortran files

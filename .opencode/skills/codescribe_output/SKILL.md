@@ -23,13 +23,12 @@ After completing planning, provide:
 
 ### Executor Command Bundle
 
-1. `codescribe.model(model_id="argo_proxy/argo:gpt-5.2")`
+*(Bundle must conform to `codescribe_core` Executor Command Bundle Contract.)*
 
+1. `codescribe.model(model_id="<model-id>")`
 2. `codescribe.codescribe(command="index", args=["src"])`
-
 3. `codescribe.codescribe(command="draft", args=["src/Solver.F90"])`
-
-4. `codescribe.codescribe(command="translate", args=["src/Solver.F90", "-p", "prompts/code_translation.toml", "-m", "argo-gpt4o"])`
+4. `codescribe.codescribe(command="translate", args=["src/Solver.F90", "-p", "prompts/code_translation.toml", "-m", "<resolved-model>"])`
 
 ---
 
@@ -110,43 +109,3 @@ When path validation fails:
 **Action Required:**
 Please provide valid file paths. I cannot proceed with missing or invalid inputs.
 ```
-
-## Bundle Format Reference
-
-The executor command bundle is a numbered list:
-
-### For `translate`
-
-```
-1. codescribe.model(model_id="<agent-model-id>")
-
-2. codescribe.codescribe(command="index", args=["<root_dir>"])
-
-3. codescribe.codescribe(command="draft", args=["<fortran_files>"])
-
-4. codescribe.codescribe(command="translate", args=[
-     "<fortran_files>",
-     "-p", "<prompt.toml>",
-     "-m", "<model>"
-   ])
-```
-
-### For `generate`
-
-```
-1. codescribe.model(model_id="<agent-model-id>")
-
-2. codescribe.codescribe(command="generate", args=[
-     "<prompt_or_toml>",
-     "-r", "<ref1>", "-r", "<ref2>",
-     "-m", "<model>"
-   ])
-```
-
-**Rules:**
-- Step 1 is always `codescribe.model`
-- For `translate` bundles: order is `model` -> `index` -> `draft` -> `translate`
-- For `generate` bundles: order is `model` -> `generate`
-- All values are concrete (no placeholders)
-- Args array includes all positional args and flags
-- Model flag (`-m`) uses value from step 1 result

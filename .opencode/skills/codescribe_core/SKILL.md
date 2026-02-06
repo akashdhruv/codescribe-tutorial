@@ -33,29 +33,28 @@ Other shell commands:
 
 ## Model Resolution Protocol
 
-**Before ANY `codescribe.codescribe` call, you MUST:**
+**Planner-only model resolution:**
 
-1. Call `codescribe.model(model_id="<agent frontmatter model>")`
-2. Check the response:
-   - If `ok=false`: STOP and report `error_code` + `message` to user
-   - If `ok=true`: Use `codescribe_model` value for the `-m` flag
+- The planner MUST call `codescribe.model(model_id="<planner agent frontmatter model>")` exactly once 
+  while constructing the executor bundle.
+- If `ok=false`, STOP and report `error_code` and `message`. Do not emit a bundle.
+- If `ok=true`, capture `codescribe_model` and embed it into the executor bundle.
 
-Example:
-```
-codescribe.model(model_id="argo_proxy/argo:gpt-5.2")
-// Returns: { ok: true, codescribe_model: "argo-gpt4o" }
-// Use: -m argo-gpt4o
-```
+**Executor MUST NOT call `codescribe.model`.**
+
+- The executor trusts the bundle's embedded resolved model.
+- If a bundle is missing the resolved model or the `-m` flag where required, the executor must refuse execution
+  and redirect the user to the planner to regenerate the bundle.
 
 ## Input Restrictions
 
-**No glob patterns:**
-- If user provides globs (e.g., `src/*.F90`): respond with:
-  > "I cannot expand glob patterns. Please provide explicit file paths."
+**Glob patterns:**
+- Globs patterns for source files (e.g., `src/*.F90`, `src/*.cpp`, etc.) are allowed, but not for toml or other files.
+  > "I can only expand glob patterns for source files. Please provide explicit file paths for other files."
 
 **No directory scanning:**
 - If user provides a directory instead of files: respond with:
-  > "I cannot scan directories. Please provide explicit file paths."
+  > "I cannot scan directories. Please provide file paths or glob patterns for source."
 
 ## Loop Prevention
 
@@ -70,24 +69,28 @@ codescribe.model(model_id="argo_proxy/argo:gpt-5.2")
 
 ## Executor Command Bundle Contract
 
-A "bundle" is the handoff format between planner and executor. It is a numbered list of tool calls:
+A "bundle" is the handoff format between planner and executor. It is a numbered list of tool calls plus a resolved model header:
 
-```
-1. codescribe.model(model_id="<agent-model-id>")
+```text
+### Executor Command Bundle
+Scenario: <translate|generate>
+Resolved model: <codescribe_model>
+
+1. codescribe.codescribe(command="<cmd>", args=[...])
 2. codescribe.codescribe(command="<cmd>", args=[...])
-3. codescribe.codescribe(command="<cmd>", args=[...])
 ...
 ```
 
 **Rules:**
-- Step 1 is ALWAYS `codescribe.model`
-- Subsequent steps are `codescribe.codescribe` calls
-- Each step includes the exact `command` and `args` array
-- No placeholders; all values must be concrete
+- The bundle MUST include `Resolved model: <codescribe_model>` as shown.
+- The executor MUST NOT call `codescribe.model`.
+- Every `translate` and `generate` call MUST include `"-m", "<codescribe_model>"` in its `args`.
+- No placeholders; all values must be concrete.
 
 **Translate bundle ordering (mandatory):**
 For `translate` scenario bundles, the command order MUST be:
-1. `codescribe.model` - Resolve model ID
-2. `codescribe.codescribe index` - Index the project directory
-3. `codescribe.codescribe draft` - Generate .scribe metadata files
-4. `codescribe.codescribe translate` - Translate Fortran to C++
+1. `codescribe.codescribe index` - Index the project directory
+2. `codescribe.codescribe draft` - Generate .scribe metadata files
+3. `codescribe.codescribe translate` - Translate Fortran to C++
+
+**See also:** Scenario definitions and required inputs in `codescribe_scenarios`.

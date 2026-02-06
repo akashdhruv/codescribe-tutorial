@@ -3,6 +3,19 @@ import { readdirSync, statSync, existsSync, lstatSync } from "node:fs"
 import { resolve, relative } from "node:path"
 
 /**
+ * Simple glob pattern matcher supporting only * wildcard.
+ * Matches filename against pattern where * matches zero or more characters.
+ */
+function matchGlob(pattern: string, filename: string): boolean {
+  // Escape regex special chars except *, then convert * to .*
+  const regexStr = pattern
+    .replace(/[.+^${}()|[\]\\]/g, '\\$&')  // escape special regex chars
+    .replace(/\*/g, '.*')                   // convert * to .*
+  const regex = new RegExp(`^${regexStr}$`, 'i')  // case-insensitive for cross-platform
+  return regex.test(filename)
+}
+
+/**
  * Validate that a path is within the root directory (no escape)
  */
 function isWithinRoot(targetPath: string, root: string): boolean {
@@ -15,30 +28,129 @@ function isWithinRoot(targetPath: string, root: string): boolean {
 
 export default tool({
   name: "codescribe.shell",
-  description: `Minimal filesystem operations: pwd, ls, path_info.
+  description: `Minimal filesystem operations: pwd, ls, path_info, glob.
 
 Commands:
   - pwd: Returns the current working directory (repository root)
   - ls: Lists entries in a directory (non-recursive)
   - path_info: Check if a path exists and its type (file/dir/symlink)
+  - glob: Match files in a directory using * wildcard patterns (single-directory only, no recursion)
 
 This tool does NOT execute shell commands. It uses Node.js filesystem APIs only.
-No recursive scanning or file filtering is provided.`,
+Glob is restricted to single-directory matching (no ** or path separators in pattern).`,
 
   args: {
     command: tool.schema.enum([
       "pwd",
       "ls",
-      "path_info"
+      "path_info",
+      "glob"
     ]).describe("The command to run"),
-    path: tool.schema.string().optional().describe("Path for ls or path_info (default: '.' for ls)")
+    path: tool.schema.string().optional().describe("Path for ls or path_info (default: '.' for ls)"),
+    pattern: tool.schema.string().optional().describe("Glob pattern for glob command (e.g. '*.F90', 'Grid*.f90'). Only * wildcard supported."),
+    cwd: tool.schema.string().optional().describe("Directory to search in for glob command (default: '.')"),
+    max_matches: tool.schema.number().optional().describe("Maximum matches to return for glob (default: 2000)")
   },
 
-  async execute({ command, path }) {
+  async execute({ command, path, pattern, cwd, max_matches }) {
     const root = process.cwd()
 
     if (command === "pwd") {
       return JSON.stringify({ cwd: root }, null, 2)
+    }
+
+    if (command === "glob") {
+      if (!pattern) {
+        return JSON.stringify({ error: "pattern parameter is required for glob command" }, null, 2)
+      }
+
+      // Reject patterns with path separators (no subdirectory traversal)
+      if (pattern.includes("/") || pattern.includes("\\")) {
+        return JSON.stringify({
+          error: "Pattern cannot contain path separators. Use cwd to specify the directory.",
+          pattern
+        }, null, 2)
+      }
+
+      // Reject recursive patterns
+      if (pattern.includes("**")) {
+        return JSON.stringify({
+          error: "Recursive patterns (**) are not supported. Only single-directory matching allowed.",
+          pattern
+        }, null, 2)
+      }
+
+      const targetDir = cwd || "."
+      const resolvedDir = resolve(root, targetDir)
+      const maxResults = max_matches || 2000
+
+      if (!isWithinRoot(targetDir, root)) {
+        return JSON.stringify({
+          error: "Directory is outside repository root",
+          cwd: targetDir
+        }, null, 2)
+      }
+
+      if (!existsSync(resolvedDir)) {
+        return JSON.stringify({
+          error: "Directory does not exist",
+          cwd: targetDir
+        }, null, 2)
+      }
+
+      try {
+        const stats = statSync(resolvedDir)
+        if (!stats.isDirectory()) {
+          return JSON.stringify({
+            error: "Path is not a directory",
+            cwd: targetDir
+          }, null, 2)
+        }
+
+        const entries = readdirSync(resolvedDir, { withFileTypes: true })
+        const matches: string[] = []
+        let truncated = false
+
+        for (const entry of entries) {
+          if (matches.length >= maxResults) {
+            truncated = true
+            break
+          }
+
+          const fullPath = resolve(resolvedDir, entry.name)
+
+          // Only match files (not directories or symlinks)
+          try {
+            const lstats = lstatSync(fullPath)
+            if (!lstats.isFile()) continue
+          } catch {
+            continue
+          }
+
+          if (matchGlob(pattern, entry.name)) {
+            // Return path relative to repo root for consistency
+            const relativePath = targetDir === "." ? entry.name : `${targetDir}/${entry.name}`
+            matches.push(relativePath)
+          }
+        }
+
+        // Sort matches alphabetically
+        matches.sort((a, b) => a.localeCompare(b))
+
+        return JSON.stringify({
+          cwd: targetDir,
+          pattern,
+          matches,
+          count: matches.length,
+          truncated
+        }, null, 2)
+      } catch (err) {
+        return JSON.stringify({
+          error: `Failed to glob directory: ${err}`,
+          cwd: targetDir,
+          pattern
+        }, null, 2)
+      }
     }
 
     if (command === "path_info") {
