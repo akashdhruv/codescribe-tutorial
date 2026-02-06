@@ -8,28 +8,38 @@ import { spawnSync } from "node:child_process"
  * 
  * Commands:
  *   - index <directory>: Index Fortran files, create scribe.yaml
- *   - draft <files>: Generate draft .scribe files with C++ annotations
- *   - translate <files> -p <prompt.toml> -m <model>: Translate Fortran to C++
+ *   - draft <file>: Generate draft .scribe file with C++ annotations
+ *   - translate <file> -p <prompt.toml> -m <model>: Translate Fortran to C++
  *   - inspect <files> -q "<query>" -m <model>: Query/analyze source files
- *   - update <files> -p <prompt.toml> -m <model>: Update existing files
- *   - generate "<prompt>" -m <model>: Generate new code
+ *   - update <files> -p <prompt.toml> -q "<query>" [-r <ref>...] -m <model>: Update existing files
+ *   - generate <prompt> [-r <ref>...] -m <model>: Generate new code
  *   - format <files>: Format TOML prompt files
+ * 
+ * Command-specific rules:
+ *   - translate: requires -p <prompt.toml>, NO -r allowed, Fortran files only
+ *   - update: requires at least one of -p <prompt.toml> or -q "<query>", optional -r <ref> (repeatable)
+ *   - generate: prompt is positional (TOML path or string), optional -r <ref> (repeatable)
+ *   - draft: single Fortran file only
+ *   - inspect: requires -q "<query>"
+ *   - index: single directory argument
+ *   - format: TOML file(s)
  * 
  * Models available via Argo:
  *   - argo-gpt4o
  *   - argo-gpt5mini
  */
+
 export default tool({
   name: "codescribe.codescribe",
   description: `Run CodeScribe CLI commands for Fortran-to-C++ translation.
 
 Commands:
   - index <directory>: Index Fortran project, creates scribe.yaml
-  - draft <files>: Generate draft .scribe files
-  - translate <file> -p <prompt.toml> -m <model>: Translate Fortran to C++
+  - draft <file>: Generate draft .scribe file (single Fortran file)
+  - translate <file> -p <prompt.toml> -m <model>: Translate Fortran to C++ (Fortran files only, no -r)
   - inspect <files> -q "<query>" -m <model>: Analyze source files
-  - update <files> -p <prompt.toml> -m <model>: Modify existing files
-  - generate "<prompt>" -m <model>: Generate new code
+  - update <files> [-p <prompt.toml>] [-q "<query>"] [-r <ref>...] -m <model>: Modify existing files (requires -p and/or -q)
+  - generate <prompt> [-r <ref>...] -m <model>: Generate new code (prompt is TOML path or string)
   - format <files>: Format TOML prompt files
 
 Example: codescribe translate src/Solver.F90 -p prompts/code_translation.toml -m argo-gpt4o`,
@@ -49,6 +59,7 @@ Example: codescribe translate src/Solver.F90 -p prompts/code_translation.toml -m
   },
 
   async execute({ command, args, cwd }) {
+
     const startTime = Date.now()
     
     const proc = spawnSync(
