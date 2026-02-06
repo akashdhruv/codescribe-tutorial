@@ -2,7 +2,7 @@
 name: codescribe.executor
 mode: primary
 
-model: argo_proxy/argo:gpt-5.2
+model: argo_proxy/argo:gpt-5-mini
 
 skills:
   "codescribe.*": true
